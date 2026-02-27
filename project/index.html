@@ -1,0 +1,42 @@
+const express = require("express");
+const app = express();
+const port = 3000;
+app.use(express.json());
+let items = {};
+// Default Route
+app.get("/", (req, res) => {
+ res.send("Welcome to the Item API!");
+});
+// POST - Create new item
+app.post("/items/:id", (req, res) => {
+ items[req.params.id] = req.body.item;
+ res.json({ message: "Item created", item: items[req.params.id] });
+});
+// GET - Retrieve an item by ID
+app.get("/items/:id", (req, res) => {
+ const item = items[req.params.id];
+ if (item) {
+ res.json({ item });
+ } else {
+ res.status(404).json({ message: "Item not found" });
+ }
+});
+// PUT - Update an existing item
+app.put("/items/:id", (req, res) => {
+ items[req.params.id] = req.body.item;
+ res.json({ message: "Item updated", item: items[req.params.id] });
+});
+// DELETE - Delete an item by ID
+app.delete("/items/:id", (req, res) => {
+ const deletedItem = items[req.params.id];
+ delete items[req.params.id];
+ if (deletedItem) {
+ res.json({ message: "Item deleted", item: deletedItem });
+ } else {
+ res.status(404).json({ message: "Item not found" });
+ }
+});
+// Start the server
+app.listen(port, "0.0.0.0", () => {
+ console.log(`Server running on port ${port}`);
+});
